@@ -12,5 +12,5 @@ wheels/
 # .env
 .env
 
-# .diea
-.idea/
+# .idea
+.idea/ 

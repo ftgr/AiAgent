@@ -1,6 +1,7 @@
 import os
 from config import MAX_FILE_SIZE
-
+from google import genai
+from google.genai import types
 
 def get_file_content(working_directory, file_path):
     # If the file_path is outside the working_directory, return the error string below. To validate the path, you can use essentially the same logic that you wrote for get_files_info.
@@ -25,3 +26,25 @@ def get_file_content(working_directory, file_path):
     
     except Exception as e:
         return f"Error: {e}"
+    
+
+# The google-genai library that we're using to interact with the Gemini API offers a standard format to describe a function for LLM callers: types.FunctionDeclaration. We'll use this to build a "declaration" or "schema" for each of our functions.
+schema_get_file_content = types.FunctionDeclaration(
+    name="get_file_content",
+    description="Reads and returns the content of a specified file within the working directory, up to a maximum size limit",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="Path to the file to read, relative to the working directory",
+            ),
+            "working_directory": types.Schema(
+                type=types.Type.STRING,
+                description="The working directory where files are located",
+            ),
+        },
+        required=["working_directory", "file_path"],
+    ),
+)
+

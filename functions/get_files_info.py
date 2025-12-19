@@ -1,5 +1,6 @@
 import os
-
+from google import genai
+from google.genai import types
 
 def get_files_info(working_directory, directory="."):
     try:
@@ -20,3 +21,24 @@ def get_files_info(working_directory, directory="."):
         return "\n".join(files_info)
     except Exception as e:
         return f"Error listing files: {e}"
+
+
+# The google-genai library that we're using to interact with the Gemini API offers a standard format to describe a function for LLM callers: types.FunctionDeclaration. We'll use this to build a "declaration" or "schema" for each of our functions.
+schema_get_files_info = types.FunctionDeclaration(
+    name="get_files_info",
+    description="Lists files in a specified directory relative to the working directory, providing file size and directory status",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "directory": types.Schema(
+                type=types.Type.STRING,
+                description="Directory path to list files from, relative to the working directory (default is the working directory itself)",
+            ),
+            "working_directory": types.Schema(
+                type=types.Type.STRING,
+                description="The working directory where files are located",
+            ),
+        },
+        required=["working_directory", "directory"],
+    ),
+)
